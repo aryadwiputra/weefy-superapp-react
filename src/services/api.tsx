@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { User } from './types/User';
 
 const api = axios.create({
   baseURL: 'http://localhost:3000/api/v1/cms/',
@@ -8,6 +7,13 @@ const api = axios.create({
   },
 });
 
-export const getUsers = async (): Promise<User[]> => {
-  return api.get('/users');
-};
+// Interceptor untuk menambahkan token ke header
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+export default api;
